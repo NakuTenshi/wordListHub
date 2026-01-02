@@ -1,0 +1,108 @@
+{% load custom_filter %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>view directory</title>
+</head>
+<style>
+    hr{
+        width: fit-content;
+    }
+    body{
+        background-color: #f3f4f6;
+        font-family: sans-serif;
+    }
+    img{
+       width: 20px; 
+    }
+    #main-div{
+        display: grid;
+        place-content: center;
+        grid-template-columns: repeat(2,auto);
+        gap: 10px;
+    }
+
+    .items-div{
+        width: 300px;
+        height: 550px;
+
+
+        border: solid;
+        background-color: #ffffff;
+        border-color: #d1d5db;
+        border-width: 2px;
+
+    }
+    .item-div{
+        margin-top: 2px;
+        margin-left: 2px;
+
+        display: grid; 
+        grid-template-columns: repeat(2, auto); 
+        gap: 0px; 
+        width: fit-content;
+        text-align: center;
+    }
+
+    .title{
+        height: 40px;
+
+        text-align: center;
+        place-content: center;
+        border-bottom: solid;
+        color: #374151;
+        border-color: #d1d5db;
+        border-width: 2px;
+
+        font-size: large;
+    }
+
+    a{
+        color: #374151;
+    }
+    a:hover{
+        color: #525c6d;
+    }
+
+</style>
+<body>
+    <div id="main-div">
+        <div class="items-div">
+            <div class="title">
+                Folders
+            </div>
+            {% if back_dir  %}
+                <div class="item-div">
+                    <img src="{% static 'folder.png' %}"><a href="/?path={{ back_dir }}"> ..</a>
+                </div>
+            {% endif %}
+            {% if dirs %}
+                {% for dir in dirs %}
+                    <div class="item-div">
+                        <img src="{% static 'folder.png' %}"> <a href="?path={{ dir }}" class="link"> {{ dir|get_lastvalue }}</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    
+        <div class="items-div">
+            <div class="title">
+                Files
+            </div>
+            {% if files %}
+                {% for file in files %}
+                    <div class="item-div">
+                        <img src="{% static 'file.png' %}" style="margin: 0px;"><a href="/show?file={{ file }}" style="margin: 0px;"> {{ file|get_lastvalue }}</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+    </div>
+
+
+</body>
+</html>
