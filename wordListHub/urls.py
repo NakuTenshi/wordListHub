@@ -11,6 +11,9 @@ urlpatterns = [
     path("", view_dir, name="home"),
     path("upload/", uploadWordlist, name="upload"),
     path("show/", show_file, name="show"),
+
+
+    path("api/get_dirs", get_dirs_api, name="get_dirs")
 ]
 
 if settings.DEBUG:

@@ -64,17 +64,25 @@
     const input = document.getElementById('path-input');
     const suggestionsBox = document.getElementById('suggestions');
 
-    // Example list of words/paths to suggest
-    const paths = [
-        '/home',
-        '/about',
-        '/contact',
-        '/products',
-        '/products/item1',
-        '/products/item2',
-        '/blog',
-        '/blog/post1'
-    ];
+    const url = "http://localhost:8000/api/get_dirs";
+    let paths = [];
+
+    fetch(url)
+    .then(response => {
+        if (!response.ok) {
+        paths = [];
+        throw new Error("Request failed");
+        }
+        return response.json();
+    })
+    .then(data => {
+        paths = data["dirs"];
+        console.log("Inside fetch:", paths);
+    })
+    .catch(error => {
+        paths = [];
+        console.error(error);
+    });
 
     input.addEventListener('input', () => {
     const value = input.value.toLowerCase();

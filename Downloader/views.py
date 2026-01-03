@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 import os 
 from pathlib import Path
-from django.http import HttpResponse, FileResponse
+import json
+from django.http import HttpResponse, JsonResponse
 from wordListHub.settings import MEDIA_ROOT
 from .forms import *
 
@@ -93,3 +94,16 @@ def uploadWordlist(r):
         return render(r, "upload.html")
     else:
         return redirect("/")
+    
+
+def get_dirs_api(r):
+    data = {}
+    dirs = []
+    for d in Path(MEDIA_ROOT).rglob("*"):
+        if d.is_dir():
+            dirs.append(str(d).split(MEDIA_ROOT)[-1]+"/")
+    
+    data["dirs"] = dirs
+    print(data)
+
+    return JsonResponse(data)
