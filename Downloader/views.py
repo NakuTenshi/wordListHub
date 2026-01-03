@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from django.http import HttpResponse, FileResponse
 from wordListHub.settings import MEDIA_ROOT
-
+from .forms import *
 
 def sanitize(path):
     requested_path = Path(MEDIA_ROOT) / path
@@ -79,3 +79,17 @@ def show_file(r):
     else:
         return redirect("/")
     
+
+def uploadWordlist(r):
+    if r.user.is_authenticated and r.user.is_staff:
+        if r.method == "POST":
+            form = uploadwordlistform(r.POST, r.FILES)
+
+            if form.is_valid():
+                form.save()
+                return redirect("/")
+            else:
+                return HttpResponse("invalid file")
+        return render(r, "upload.html")
+    else:
+        return redirect("/")

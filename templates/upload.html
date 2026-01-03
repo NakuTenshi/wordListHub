@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>upload wordlist</title>
+</head>
+<body>
+    
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" name="path" id="path-input">
+        <input type="file" name="file" id="file-input">
+        <button type="submit">send</button>
+    </form>
+
+</body>
+</html>

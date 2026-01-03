@@ -94,7 +94,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-MEDIA_URL = '/wordlist/'
 MEDIA_ROOT = f"{BASE_DIR}/wordlist/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
