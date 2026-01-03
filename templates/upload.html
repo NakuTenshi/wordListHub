@@ -4,15 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>upload wordlist</title>
+<style>
+    body{
+        background-color: #f3f4f6;
+        font-family: sans-serif;
+        display: grid;
+
+        place-content: center;
+    }
+
+    #main-div{
+        background-color: #ffffff;
+        padding: 20px;
+
+        border: solid;
+        border-color: #d1d5db;
+        border-width: 2px;
+        border-radius: 5px;
+    }
+    .suggestions-box {
+        border: 1px solid #ccc;
+        max-height: 150px;
+        overflow-y: auto;
+        position: absolute;
+        background: white;
+        width: 200px;
+        display: none;
+        z-index: 1000;
+    }
+    .suggestion-item {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+    .suggestion-item:hover {
+        background-color: #eee;
+    }
+</style>
 </head>
 <body>
+    <div id="main-div">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="path">wordlist path:</label><br>
+            <input type="text" name="path" id="path-input" placeholder="subdomains/ or params/">
+            <div id="suggestions" class="suggestions-box"></div><br><br>
+
+            <label for="file-input">upload .txt,.list file here:</label><br>
+            <input type="file" name="file" id="file-input">
+            <br>
+            <br>
+
+            <button type="submit">send</button>
+        </form>
+    </div>
     
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="text" name="path" id="path-input">
-        <input type="file" name="file" id="file-input">
-        <button type="submit">send</button>
-    </form>
 
 </body>
+<script>
+    const input = document.getElementById('path-input');
+    const suggestionsBox = document.getElementById('suggestions');
+
+    // Example list of words/paths to suggest
+    const paths = [
+        '/home',
+        '/about',
+        '/contact',
+        '/products',
+        '/products/item1',
+        '/products/item2',
+        '/blog',
+        '/blog/post1'
+    ];
+
+    input.addEventListener('input', () => {
+    const value = input.value.toLowerCase();
+    suggestionsBox.innerHTML = ''; // Clear previous suggestions
+
+    if (!value) {
+        suggestionsBox.style.display = 'none';
+        return;
+    }
+
+    const filtered = paths.filter(path => path.toLowerCase().includes(value));
+    if (filtered.length === 0) {
+        suggestionsBox.style.display = 'none';
+        return;
+    }
+
+    filtered.forEach(path => {
+        const div = document.createElement('div');
+        div.textContent = path;
+        div.classList.add('suggestion-item');
+        div.addEventListener('click', () => {
+        input.value = path;
+        suggestionsBox.style.display = 'none';
+        });
+        suggestionsBox.appendChild(div);
+    });
+
+    suggestionsBox.style.display = 'block';
+    });
+    </script>
 </html>
