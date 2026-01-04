@@ -121,7 +121,7 @@ http://127.0.0.1:8000/?path=/
 - `/api/get_dirs/`  
   Returns directory list as JSON (staff users only)
 
-- `api/download`  
+- `/api/download`  
   Download all wordlists as a ZIP file
 
 ---
