@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 import os 
 from pathlib import Path
 import json
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from wordListHub.settings import MEDIA_ROOT
 from .forms import *
+import io
+import zipfile
+
 
 def sanitize(path):
     requested_path = Path(MEDIA_ROOT) / path
@@ -97,13 +100,46 @@ def uploadWordlist(r):
     
 
 def get_dirs_api(r):
-    data = {}
-    dirs = []
-    for d in Path(MEDIA_ROOT).rglob("*"):
-        if d.is_dir():
-            dirs.append(str(d).split(MEDIA_ROOT)[-1]+"/")
-    
-    data["dirs"] = dirs
-    print(data)
+    if r.user.is_authenticated and r.user.is_staff:
+        
+        data = {}
+        dirs = []
+        for d in Path(MEDIA_ROOT).rglob("*"):
+            if d.is_dir():
+                dirs.append(str(d).split(MEDIA_ROOT)[-1]+"/")
+        
+        data["dirs"] = dirs
+        print(data)
 
-    return JsonResponse(data)
+        return JsonResponse(data)
+    else:
+        return HttpResponseForbidden("access denied")
+    
+
+def DownloadWordList(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        folder_path = MEDIA_ROOT
+        zip_filename = "myWordList.zip"
+
+        # Create in-memory buffer
+        buffer = io.BytesIO()
+
+        # Create zip file in memory
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            for root, dirs, files in os.walk(folder_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+
+                    # Keep folder structure inside zip
+                    arcname = os.path.relpath(file_path, folder_path)
+                    zip_file.write(file_path, arcname)
+
+        buffer.seek(0)
+
+        # Create HTTP response
+        response = HttpResponse(buffer.getvalue(), content_type="application/zip")
+        response["Content-Disposition"] = f'attachment; filename="{zip_filename}"'
+
+        return response
+    else:
+        return HttpResponseForbidden("access denied")

@@ -13,7 +13,8 @@ urlpatterns = [
     path("show/", show_file, name="show"),
 
 
-    path("api/get_dirs", get_dirs_api, name="get_dirs")
+    path("api/get_dirs", get_dirs_api, name="get_dirs"),
+    path("api/download/", DownloadWordList, name="download"),
 ]
 
 if settings.DEBUG:
