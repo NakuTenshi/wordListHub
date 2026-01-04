@@ -117,29 +117,26 @@ def get_dirs_api(r):
     
 
 def DownloadWordList(request):
-    if request.user.is_authenticated and request.user.is_staff:
-        folder_path = MEDIA_ROOT
-        zip_filename = "myWordList.zip"
+    folder_path = MEDIA_ROOT
+    zip_filename = "myWordList.zip"
 
-        # Create in-memory buffer
-        buffer = io.BytesIO()
+    # Create in-memory buffer
+    buffer = io.BytesIO()
 
-        # Create zip file in memory
-        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-            for root, dirs, files in os.walk(folder_path):
-                for file in files:
-                    file_path = os.path.join(root, file)
+    # Create zip file in memory
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        for root, dirs, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
 
-                    # Keep folder structure inside zip
-                    arcname = os.path.relpath(file_path, folder_path)
-                    zip_file.write(file_path, arcname)
+                # Keep folder structure inside zip
+                arcname = os.path.relpath(file_path, folder_path)
+                zip_file.write(file_path, arcname)
 
-        buffer.seek(0)
+    buffer.seek(0)
 
-        # Create HTTP response
-        response = HttpResponse(buffer.getvalue(), content_type="application/zip")
-        response["Content-Disposition"] = f'attachment; filename="{zip_filename}"'
+    # Create HTTP response
+    response = HttpResponse(buffer.getvalue(), content_type="application/zip")
+    response["Content-Disposition"] = f'attachment; filename="{zip_filename}"'
 
-        return response
-    else:
-        return HttpResponseForbidden("access denied")
+    return response
